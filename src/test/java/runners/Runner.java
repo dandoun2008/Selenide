@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
         monochrome = true,
         features = "./src/test/resources/features", //path of the features file
         glue = {"stepdefinitions"}, //path os the step definitions
-        tags = "@assertions2",
+        tags = "@iframe",
         dryRun = false
 )
 
