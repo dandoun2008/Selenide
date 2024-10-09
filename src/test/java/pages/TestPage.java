@@ -45,4 +45,19 @@ public class TestPage {
 //  LOCATING IFRAMES
     public SelenideElement pageHeader = $(By.xpath("//h3"));
     public SelenideElement backToTechpro = $(By.xpath("//a[@type='button']"));
+
+//  ACTIONS
+    public SelenideElement source = $(By.id("draggable"));
+
+    public SelenideElement target =$(By.id("droppable"));
+
+//  EXPLICIT WAIT
+    public SelenideElement startButton = $(By.xpath("//div[@id='start']//button"));
+
+    public SelenideElement helloWorld = $(By.xpath("//div[@id='finish']//h4"));
+
+//  SCREENSHOTS
+
+    public SelenideElement dialogueIcon = $(By.xpath("//*[@id='zsiq_agtpic']"));
+
 }

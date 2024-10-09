@@ -1,5 +1,6 @@
 package stepdefinitions;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import io.cucumber.java.en.And;
@@ -7,10 +8,16 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.TestPage;
 
-import static com.codeborne.selenide.Condition.checked;
-import static com.codeborne.selenide.Condition.text;
+import java.time.Duration;
+
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.actions;
 import static com.codeborne.selenide.Selenide.switchTo;
 
 public class TestPageStepDefinitions {
@@ -89,6 +96,7 @@ public class TestPageStepDefinitions {
         }
     }
 
+//     ALERTS
     @Given("I click on alert prompt")
     public void i_click_on_alert_prompt() {
       testPage.jsPromptButton.click();
@@ -103,7 +111,7 @@ public class TestPageStepDefinitions {
         testPage.result.shouldHave(text(string));
     }
 
-//     IFRAMES
+//   IFRAMES
 
     @Given("I verify the page header contains {string}")
     public void i_verify_the_page_header_contains(String string) { //This element is OUTSIDE the iframe
@@ -112,25 +120,92 @@ public class TestPageStepDefinitions {
     @Given("I switch to frame {int}")
     public void i_switch_to_frame(Integer int1) {
         WebDriverRunner.getWebDriver().switchTo().frame(int1-1); //1-1 = 0 (index of iframe)
-
     }
     @Given("I click on Back to TechProEducation.com")
     public void i_click_on_back_to_tech_pro_education_com() {//This element is INSIDE the iframe
         testPage.backToTechpro.click();
-
     }
 
 //  SWITCHING TO NEW WINDOW
     @When("I switch to window {int}")
     public void i_switch_to_window(Integer int1) {
         switchTo().window(int1-1);
-
     }
     @Then("I get the URL of the page and verify it contains {string}")
     public void i_get_the_url_of_the_page_and_verify_it_contains(String string) {
         System.out.println(WebDriverRunner.url());
         Assert.assertTrue(WebDriverRunner.url().contains(string));
+    }
+
+//  ACTIONS
+    @When("I drag the source in the target")
+    public void iDragTheSourceInTheTarget() {
+//        actions()
+//                .dragAndDrop(testPage.source, testPage.target)
+//                .build()
+//                .perform(); //REQUIRED te execute the command
+
+//      OR
+//          actions().clickAndHold(testPage.source)
+//                .moveToElement(testPage.target)
+//                .build()
+//                .perform();
+
+//      OR we can drag the source and drop it at specific coordinates (exact location in the target)
+        actions()
+                .dragAndDropBy(testPage.source, 305, 167)
+                .build()
+                .perform();
+    }
+
+    @And("I scroll the page down")
+    public void iScrollThePageDown() {
+//        actions()
+//                .sendKeys(Keys.PAGE_DOWN)
+//                .build()
+//                .perform();
+
+//      OR we can move the page just a little bit down by ARROW_DOWN
+        actions()
+                .sendKeys(Keys.ARROW_DOWN)
+                .build()
+                .perform();
+    }
+//  EXPLICIT WAIT
+    @And("I click on start button")
+    public void iClickOnStartButton() {
+        testPage.startButton.click();
+    }
+
+    @Then("I verify the Hello World! text is displayed")
+    public void iVerifyTheHelloWorldTextIsDisplayed() {
+    //  Assert.assertEquals("Hello World!", testPage.helloWorld.getText());
+    //  The above step fails because there is not enough time for "Hello World!" text to be visible.
+    //  To fix the issue, the best option is to add explicit wait for dynamic coding
+
+    //  1. Handle with WebDriverWait Class
+    //  WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(20));
+    //  wait.until(ExpectedConditions.visibilityOf(testPage.helloWorld));
+
+    //  2. Selenide wait
+    testPage.helloWorld.should(Condition.visible, Duration.ofSeconds(20));
+
+    //Assertion 1 (junit assertion)
+    //Assert.assertEquals("Hello World!", testPage.helloWorld.getText());
+
+    //Assertion 2 (Selenide assertion)
+    testPage.helloWorld.should(Condition.text("fake test")); //FAIL
+    //The above step was created to show that with Selenide assertions, 'build folder' is created and a report with screenshot
+        // taken for the failed test. With junit assertions, we don't get a screenshot!
+        //By Default, Selenide takes the screenshot ==>
+        //      Configuration.screenshots = true;
+        // However, we can DISABLE this feature ==>
+        //      Configuration.screenshots = false;
+
+
+
 
     }
+
 
 }
