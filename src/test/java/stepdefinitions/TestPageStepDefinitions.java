@@ -8,17 +8,18 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.TestPage;
 
+import java.io.File;
 import java.time.Duration;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.actions;
-import static com.codeborne.selenide.Selenide.switchTo;
+import static com.codeborne.selenide.Selenide.*;
 
 public class TestPageStepDefinitions {
 
@@ -201,11 +202,38 @@ public class TestPageStepDefinitions {
         //      Configuration.screenshots = true;
         // However, we can DISABLE this feature ==>
         //      Configuration.screenshots = false;
-
-
-
-
     }
 
+//  FILE UPLOAD
+    @And("I upload the file existing on this path {string}")
+    public void iUploadTheFileExistingOnThisPath(String arg0) {
+        //1. Get the file path
+        File fullPath = new File(arg0);
+        //2. Upload the file
+        $(By.id("file-upload")).uploadFile(fullPath);
+        //3. Click upload button
+        $(By.id("file-submit")).click();
+    }
 
+    @Then("I verify the file is uploaded")
+    public void iVerifyTheFileIsUploaded() {
+        $(By.xpath("//h3")).shouldHave(Condition.text("File Uploaded!"));
+    }
+
+//  JS EXECUTOR
+    @And("I scroll down to footer section")
+    public void iScrollDownToFooterSection() {
+        SelenideElement footer = $(By.xpath("//table[@class='navFooter']"));
+        executeJavaScript("arguments[0].scrollIntoView(true)", footer);
+    }
+
+    @And("I click on {string} by JS on Amazon table")
+    public void iClickOnByJSOnAmazonTable(String arg0) {
+        SelenideElement element = $(By.xpath("//table[@class='navFooter']//*contains(text(),'"+arg0+"')]"));
+        executeJavaScript("arguments[0].click();", element);
+
+//      ALTERNATIVELY LOCATING THE ELEMENT WITH JAVASCRIPT
+//      executeJavaScript("document.getElementById('nav-logo-sprites').click();");
+
+    }
 }

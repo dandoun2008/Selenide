@@ -23,9 +23,32 @@ public class CommonStepDefinitions {
 
         // Use the formatted date string for the screenshot filename
         screenshot(timestamp); // You might want to pass the sanitized timestamp to the screenshot method
-    }
+
         //screenshot(new Date().toString()); //This method gets us a screenshot with a dynamic filename
-            //but did not work for me because of the date formatting, so I had to use chatgpt code to adjust the date format
+        //but did not work for me because of the date formatting, so I had to use chatgpt code to adjust the date format
+
+    }
+
+    @Given("I open the {string} browser")
+    public void iOpenTheBrowser(String browserType) {
+        switch (browserType) {
+            case "headless":
+                Configuration.headless = true;
+                break;
+            case "firefox":
+                Configuration.browser = "firefox";
+                break;
+            case "safari":
+                Configuration.browser = "safari";
+                break;
+            case "edge":
+                Configuration.browser = "edge";
+                break;
+            default:
+                Configuration.browser = "chrome";
+                break;
+        }
+    }
 
 
 }
